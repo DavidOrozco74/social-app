@@ -15,6 +15,12 @@ export class PublicationsComponent {
 
   publicacionesForm: FormGroup = new FormGroup({})
 
+  constructor(
+    private router: Router,
+    private form: FormBuilder,
+    private publicationService: PublicationsService
+  ) { this.buildForm(); }
+
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -37,27 +43,27 @@ export class PublicationsComponent {
     console.log('Imágenes:', this.imagenes);
   }
 
-  constructor(
-    private router: Router,
-    private form: FormBuilder,
-    private publicationService: PublicationsService
-  ) { this.buildForm(); }
-
-  private buildForm(){
-    this.publicacionesForm=this.form.group({
-      description:['', [Validators.required]]
-    })
-  }
-
   onSubmit(event:Event){
     event.preventDefault()
     if(this.publicacionesForm.valid){
       const publicaciones=this.publicacionesForm.value
       this.publicationService.createPublication(publicaciones)
-      .subscribe((newPublication:Publication)=> {})
+      .subscribe((newPublication:Publication)=> {
+        console.log(newPublication);
+        this.router.navigate(['./menu']);
+      })
     }
     this.publicacionesForm.reset();
   }
+
+  private buildForm(){
+    this.publicacionesForm=this.form.group({
+      description:['', [Validators.required]],
+      typePublication:['texto', [Validators.required]],
+    });
+  }
+
+
 
   ngOnInit(): void {
   }
